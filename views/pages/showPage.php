@@ -5,7 +5,7 @@
         <meta name="Description" content=""/>
         <meta name="Keywords" content=""/>
         <link rel="stylesheet" type="text/css" href=""/>
-        <title></title>
+        <title><?php echo $page['title']; ?></title>
     </head>
     <body>
         <?php echo $page['contect']; ?>
