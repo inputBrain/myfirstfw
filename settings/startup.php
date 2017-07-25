@@ -10,5 +10,10 @@ function getDb(){
             die('DB select error');
     @mysqli_query($db, 'SET NAMES UTF8') OR
             die('DB encoding error');
+    
+    if ($db->connect_errno) {
+        printf("Не удалось подключиться: %s\n", $mysqli->connect_error);
+        exit();
+    }
     return $db;
 }

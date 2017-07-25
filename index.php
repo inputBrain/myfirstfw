@@ -1,14 +1,17 @@
 <?php
+
 include_once 'settings/startup.php';
 $uri = $_SERVER['REQUEST_URI'];
-//echo $uri . '<hr />';
-$uri = preg_replace('/^\/'.APP_DIR.'\//i', '', $uri);
-//echo $uri . '<hr />';
-$params = explode("/", $uri);
-//var_dump($params);
-$controller = array_shift($params);
-$action = array_shift($params);
-//echo $controller . '<hr />' ;
-//echo $action . '<hr />' ;
-include_once '/controllers/pages.php' ;
-call_user_func_array($action, $params);
+$uri = preg_replace('/^\/' . APP_DIR . '\//i', '', $uri);
+$uri = preg_replace('/^\//i', '', $uri);
+//var_dump($uri); //string(11) "/showPage/1" 
+
+include_once 'settings/routes.php';
+include_once 'functions/functions.php';
+$route = get_route($uri);
+
+//var_dump($route); //array(3) { ["controller"]=> string(0) "" ["action"]=> NULL ["params"]=> array(0) { } }
+
+include_once 'controllers/pages.php';
+call_user_func_array("{$route['action']}_act", $route['params']);
+
