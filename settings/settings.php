@@ -7,3 +7,4 @@ define(DB_PRE, 'k_');
 
 
 define(APP_DIR, 'myfirstfw');
+define(APP_PATH, __DIR__ . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR);
