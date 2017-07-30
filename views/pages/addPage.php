@@ -10,11 +10,11 @@
     Имя в меню: <input type="text" name="menu_name" value=""/><br/>
     Позиция в меню:<select name="menu_position">
         <?php if ($menu AND ! empty($menu)) : ?>
-            <?php foreach ($menu as $mPosition => $mName): ?>
-            <option value="<?php echo $mPosition ;?>"> <?php echo $mPosition ;?>) <?php echo $mName;;?></option>
+            <?php foreach ($menu as $mPos => $mName): ?>
+            <option value="<?php echo $mPos ;?>"> <?php echo $mPos ;?>) <?php echo $mName;;?></option>
             <?php endforeach; ?>
         <?php endif; ?>
-            <option selected value="<?php echo $mPosition + 1 ;?>"> <?php echo $mPosition + 1;?>) В конец</option>
+            <option selected value="<?php echo $mPos + 1 ;?>"> <?php echo $mPos + 1;?>) В конец</option>
     </select> <br/>
     Титул страницы:<input type="text" name="title" value=""/> <br/>
     Содержание страницы:<textarea name="content" cols="70" rows="10"></textarea><br/>
