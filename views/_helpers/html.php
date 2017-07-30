@@ -1,6 +1,6 @@
 <?php
 function element_hlp($_eName, $_varsArr) {
-    $_eName .= "views/_helpers/{$_eName}.php";
+    $_eName = "views/_elements/{$_eName}.php";
     if (file_exists($_eName)) {
         if (is_array($_varsArr)) {
             extract($_varsArr);

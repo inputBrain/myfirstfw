@@ -5,10 +5,23 @@ include_once 'views/_helpers/session.php';
 include_once 'controller.php';
 include_once 'views/_helpers/html.php';
 
+
 function addPage_act() {
-    $menu = getMenu('admin');
+    if ($_POST) {
+        $result = addPage($_POST);
+        if ($result){
+            setFlash_cmp('successMessage', 'Страница создана успешно');
+            header('Location :' . $_SERVER['REQUEST_URI']) ;
+        } else {
+                   setFlash_cmp('errorMessage', 'Страницу создать не удалось');
+            header('Location :' . $_SERVER['REQUEST_URI']) ;
+        }
+    } else {
+            $menu = getMenu('admin');
     $page = array('menu'=>$menu, 'title'=>'Добавление страницы') ;
     display_ctr($page);
+    }
+
 }
 
 function show_act($mPos=null) {
@@ -23,7 +36,6 @@ function show_act($mPos=null) {
     $menu = getMenu();
     $page['menu'] = $menu;
     display_ctr($page);
-    
 }
 
 function login_act() {
