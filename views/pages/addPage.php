@@ -1,9 +1,9 @@
 <?php if (getFlash_hlp('errorMessage', false))?>
     <div style="color:rgb(255,0,0)"><?php echo getFlash_hlp('errorMessage', TRUE) ?></div>
-<?php echo $contect; ?>
+<?php echo $content; ?>
 <?php if (getFlash_hlp('successMessage', false))?>
     <div style="color:rgb(255,0,0)"><?php echo getFlash_hlp('successMessage', TRUE) ?></div>
-<?php echo $contect; ?>
+<?php echo $content; ?>
 <form action="" method="post">
     Ключевые слова:<input type="text" name="keywords" value="" /><br/>
     Описание :<input type="text" name="description" value="" /><br/>
