@@ -11,10 +11,10 @@ function addPage_act() {
         $result = addPage($_POST);
         if ($result) {
             setFlash_cmp('successMessage', 'Страница создана успешно');
-            header('Location :' . $_SERVER['REQUEST_URI']);
+            header('Location: ' . $_SERVER['REQUEST_URI']);
         } else {
             setFlash_cmp('errorMessage', 'Страницу создать не удалось');
-            header('Location :' . $_SERVER['REQUEST_URI']);
+            header('Location: ' . $_SERVER['REQUEST_URI']);
         }
     } else {
         $menu = getMenu('admin');
@@ -25,10 +25,16 @@ function addPage_act() {
 
 function editPage_act($mPos) {
     $db = getDb();
-    $page = getPage($mPos, 'admin');
-    $menu = getMenu('admin');
-    $page['menu'] = $menu ;
-    display_ctr($page);
+   
+    if (!$_POST) {
+        $page = getPage($mPos, 'admin');
+        $menu = getMenu('admin');
+        $page['menu'] = $menu ;
+        display_ctr($page);
+    } else {
+       $result = editPage($_POST);
+       header('Location: ' . $_SERVER['REQUEST_URI']);
+    }
 }
 
 function show_act($mPos = null) {

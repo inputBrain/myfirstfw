@@ -44,18 +44,60 @@ function addPage($post) {
     $result = mysqli_query($db, $insert);
     return $result;
 }
+function editPage($page) {
+    $db = getDb();
+    $page['visible'] = intval($page['visible']);
+    if ($page['visible'] !== 1) {
+        $page['visible'] = 0;
+    }
+    //Валидируем позицию в меню
+    $page['menu_position'] = intval($page['menu_position']);
+    $mPositions = getListOfMenuPositions();
+    if (!in_array($page['menu_position'], $mPositions)) {
+        return false; //Возвр.Эту строку...
+        // Готовим позиции в меню, сдвигая их вверх или вниз, для того, чтобы можно было
+        // применить новую позицию из $_POST данных
+        $currentPosition = $mPositions[$page['id']];
+        $postPositions = $page['menu_position'];
+        if ($currentPosition > $postPositions) {
+            $update = "UPDATE " . DB_PRE . "pages 
+                SET menu_positions = menu_position + 1 
+                WHERE menu_position >=" . mysqli_real_escape_string($postPositions) . "
+                AND menu_position < " . mysqli_real_escape_string($currentPositions);
+            mysqli_query($db, $update);
+        } elseif ($currentPosition < $postPositions) {
+            $update = "UPDATE " . DB_PRE . "pages 
+                SET menu_positions = menu_position - 1 
+                WHERE menu_position >" . mysqli_real_escape_string($currentPosition) . "
+                AND menu_position <= " . mysqli_real_escape_string($postPositions);
+            mysqli_query($db, $update);
+        }
+        // изменяем запись в соответствии с пришедшими ПОСТ данными
+        $update = "UPDATE " . DB_PRE . "pages 
+                   SET keywords = '" . mysqli_real_escape_string($page['keywords']) . "',
+                   description = '" . mysqli_real_escape_string($page['description']) . "',
+                   menu_name = '" . mysqli_real_escape_string($page['menu_name']) . "',
+                   menu_position = " . mysqli_real_escape_string($page['menu_position']) . ",
+                   title = '" . mysqli_real_escape_string($page['title']) . "',
+                   content = '" . mysqli_real_escape_string($page['content']) . "'
+                   visible = '" . mysqli_real_escape_string($page['visible']) . "'
+                 WHERE id = " . mysqli_real_escape_string($page['id']) ;
+        $result = mysqli_query($db, $update);
+        return $result;
+    }
+}
 
-//еще одна спомогательная ф-ция для addPage задача её состоит в том, чтобы сдвигать позиции меню вниз:
+//еще одна Вспомогательная ф-ция для addPage задача её состоит в том, чтобы сдвигать позиции меню вниз:
 function incMenuPositions($start) {
     $db = getDb();
     $start = mysqli_real_escape_string($db, $start);
     $update = "UPDATE " . DB_PRE . "pages
-              SET menu_positions = menu_positions + 1 
-              WHERE menu_positions >= {$start}";
+              SET menu_position = menu_position + 1 
+              WHERE menu_position >= {$start}";
     mysqli_query($db, $update);
 }
 
-// Максимальное значение в menu_positions(спомогательная ф-ция для addPage) :
+// Максимальное значение в menu_position(Вспомогательная ф-ция для addPage) :
 function maxMenuPosition() {
     $db = getDb();
     $select = "SELECT MAX(menu_position)
@@ -91,4 +133,15 @@ function getMenu($mode = 'user') {
         $menu[$row['menu_position']] = $row['menu_name'];
     }
     return $menu;
+}
+
+function getListOfMenuPositions() {
+     $db = getDb();
+     $menu_positions = array( );
+     $select = "SELECT id,menu_position FROM " .DB_PRE. "pages ORDER BY menu_position" ;
+     $result = mysqli_query($db, $select);
+     while ($row = mysqli_fetch_assoc($result)) {
+         $menu_positions[ $row[ 'id' ] ] = $row[ 'menu_position' ] ;
+         return $menu_positions ;
+     }
 }
