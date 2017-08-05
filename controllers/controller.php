@@ -18,3 +18,9 @@ function display_ctr(array $_varsArr = array(), $_vName = null, $_lName = null) 
     $content_for_layout = ob_get_clean();
     include $_lName;
 }
+
+function redirect_ctr($url) {
+    $url = '/' . APP_DIR . '/' . $url ;
+    header("Location:{$url}" ) ;
+    exit;
+}

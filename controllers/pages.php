@@ -6,6 +6,13 @@ include_once 'views/_helpers/session.php';
 include_once 'controller.php';
 include_once 'views/_helpers/html.php';
 
+
+function adminIndex_act() {
+    include_once 'views/_helpers/session.php';
+    $menu = getMenu('admin');
+    display_ctr(compact('menu') ) ;
+}
+
 function addPage_act() {
     if ($_POST) {
         $result = addPage($_POST);
@@ -20,6 +27,18 @@ function addPage_act() {
         $menu = getMenu('admin');
         $page = array('menu' => $menu, 'title' => 'Добавление страницы');
         display_ctr($page);
+    }
+}
+
+function deletePage_act( $mPos ) {
+    include_once 'controllers/_components/session.php';
+    $result = deletePage($mPos);
+    if ($result) {
+        setFlash_cmp('successMessage', 'Успешно удалено') ;
+        redirect_ctr('admin') ;
+    } else {
+        setFlash_cmp('errorMessage', 'Страницу не удалось удалить') ;
+        redirect_ctr('admin') ;
     }
 }
 

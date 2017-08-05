@@ -87,6 +87,26 @@ function editPage($page) {
     }
 }
 
+function deletePage($mPos) {
+    $db = getDb();
+    $delete = "DELETE FROM" .
+               DB_PRE. 'pages 
+               WHERE menu_position = ' . mysqli_real_escape_string($mPos) . '
+               LIMIT 1';
+    
+    $result = mysqli_query($db, $delete);
+    if (mysqli_affected_rows($db) < 1) {
+        return false ;
+    }
+    $update = "UPDATE " . DB_PRE . "pages
+              SET menu_position = menu_position - 1 
+              WHERE menu_position = ". mysqli_real_escape_string($mPos);
+    if ($result) {
+        $result = mysqli_query($db, $update);
+        return  $result;
+    }
+}
+
 //еще одна Вспомогательная ф-ция для addPage задача её состоит в том, чтобы сдвигать позиции меню вниз:
 function incMenuPositions($start) {
     $db = getDb();
