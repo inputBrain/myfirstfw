@@ -34,16 +34,17 @@ function addPage($post) {
     $content = mysqli_real_escape_string($db, $post['content']);
     $visible = mysqli_real_escape_string($db, $visible);
     $insert = "INSERT INTO " . DB_PRE . "pages
-               SET keywords = '{$keywords}', 
-               description = '{$description}', 
-               menu_name = '{$menu_name}', 
-               menu_position = '{$menu_position}', 
-               title = '{$title}', 
-               content = '{$content}', 
+               SET keywords = '{$keywords}',
+               description = '{$description}',
+               menu_name = '{$menu_name}',
+               menu_position = '{$menu_position}',
+               title = '{$title}',
+               content = '{$content}',
                visible = '{$visible}'";
     $result = mysqli_query($db, $insert);
     return $result;
 }
+
 function editPage($page) {
     $db = getDb();
     $page['visible'] = intval($page['visible']);
@@ -54,53 +55,50 @@ function editPage($page) {
     $page['menu_position'] = intval($page['menu_position']);
     $mPositions = getListOfMenuPositions();
     if (!in_array($page['menu_position'], $mPositions)) {
-        return false; //Возвр.Эту строку...
+        return false;
+    }
         // Готовим позиции в меню, сдвигая их вверх или вниз, для того, чтобы можно было
         // применить новую позицию из $_POST данных
         $currentPosition = $mPositions[$page['id']];
         $postPositions = $page['menu_position'];
         if ($currentPosition > $postPositions) {
-            $update = "UPDATE " . DB_PRE . "pages 
-                SET menu_positions = menu_position + 1 
-                WHERE menu_position >=" . mysqli_real_escape_string($postPositions) . "
-                AND menu_position < " . mysqli_real_escape_string($currentPositions);
+            $update = "UPDATE " . DB_PRE . "pages
+                SET menu_positions = menu_position + 1
+                WHERE menu_position >=" . mysqli_real_escape_string($db, $postPositions) . "
+                AND menu_position < " . mysqli_real_escape_string($db, $currentPositions);
             mysqli_query($db, $update);
         } elseif ($currentPosition < $postPositions) {
-            $update = "UPDATE " . DB_PRE . "pages 
-                SET menu_positions = menu_position - 1 
-                WHERE menu_position >" . mysqli_real_escape_string($currentPosition) . "
-                AND menu_position <= " . mysqli_real_escape_string($postPositions);
+            $update = "UPDATE " . DB_PRE . "pages
+                SET menu_positions = menu_position - 1
+                WHERE menu_position >" . mysqli_real_escape_string($db, $currentPosition) . "
+                AND menu_position <= " . mysqli_real_escape_string($db, $postPositions);
             mysqli_query($db, $update);
         }
         // изменяем запись в соответствии с пришедшими ПОСТ данными
-        $update = "UPDATE " . DB_PRE . "pages 
-                   SET keywords = '" . mysqli_real_escape_string($page['keywords']) . "',
-                   description = '" . mysqli_real_escape_string($page['description']) . "',
-                   menu_name = '" . mysqli_real_escape_string($page['menu_name']) . "',
-                   menu_position = " . mysqli_real_escape_string($page['menu_position']) . ",
-                   title = '" . mysqli_real_escape_string($page['title']) . "',
-                   content = '" . mysqli_real_escape_string($page['content']) . "'
-                   visible = '" . mysqli_real_escape_string($page['visible']) . "'
-                 WHERE id = " . mysqli_real_escape_string($page['id']) ;
+        $update = "UPDATE " . DB_PRE . "pages
+                   SET keywords = '" . mysqli_real_escape_string($db, $page['keywords']) . "',
+                   description = '" . mysqli_real_escape_string($db, $page['description']) . "',
+                   menu_name = '" . mysqli_real_escape_string($db, $page['menu_name']) . "',
+                   menu_position = " . mysqli_real_escape_string($db, $page['menu_position']) . ",
+                   title = '" . mysqli_real_escape_string($db, $page['title']) . "',
+                   content = '" . mysqli_real_escape_string($db, $page['content']) . "'
+                   visible = '" . mysqli_real_escape_string($db, $page['visible']) . "'
+                 WHERE id = " . mysqli_real_escape_string($db, $page['id']) ;
         $result = mysqli_query($db, $update);
         return $result;
     }
-}
 
 function deletePage($mPos) {
     $db = getDb();
-    $delete = "DELETE FROM" .
-               DB_PRE. 'pages 
-               WHERE menu_position = ' . mysqli_real_escape_string($mPos) . '
-               LIMIT 1';
-    
-    $result = mysqli_query($db, $delete);
+    $query = "DELETE FROM " . DB_PRE. "pages "
+            . "WHERE menu_position='" . ((int) $mPos) . '\' LIMIT 1';
+    $result = mysqli_query($db, $query);
     if (mysqli_affected_rows($db) < 1) {
         return false ;
     }
     $update = "UPDATE " . DB_PRE . "pages
-              SET menu_position = menu_position - 1 
-              WHERE menu_position = ". mysqli_real_escape_string($mPos);
+              SET menu_position = menu_position - 1
+              WHERE menu_position = " . ((int) $mPos);
     if ($result) {
         $result = mysqli_query($db, $update);
         return  $result;
@@ -112,7 +110,7 @@ function incMenuPositions($start) {
     $db = getDb();
     $start = mysqli_real_escape_string($db, $start);
     $update = "UPDATE " . DB_PRE . "pages
-              SET menu_position = menu_position + 1 
+              SET menu_position = menu_position + 1
               WHERE menu_position >= {$start}";
     mysqli_query($db, $update);
 }
@@ -156,12 +154,12 @@ function getMenu($mode = 'user') {
 }
 
 function getListOfMenuPositions() {
-     $db = getDb();
-     $menu_positions = array( );
-     $select = "SELECT id,menu_position FROM " .DB_PRE. "pages ORDER BY menu_position" ;
-     $result = mysqli_query($db, $select);
-     while ($row = mysqli_fetch_assoc($result)) {
-         $menu_positions[ $row[ 'id' ] ] = $row[ 'menu_position' ] ;
-         return $menu_positions ;
-     }
+    $db = getDb();
+    $menu_positions = array();
+    $select = "SELECT id , menu_position FROM " . DB_PRE . "pages ORDER BY menu_position";
+    $result = mysqli_query($db, $select);
+    while ($row = mysqli_fetch_assoc($result)) {
+        $menu_positions[(int) $row['id']] = $row['menu_position'];
+    }
+    return $menu_positions;
 }

@@ -69,9 +69,3 @@ function show_act($mPos = null) {
     $page['menu'] = $menu;
     display_ctr($page);
 }
-
-function login_act() {
-    $menu = getMenu();
-    $vars = array('menu' => $menu);
-    display_ctr($vars);
-}
