@@ -16,6 +16,8 @@ function adminIndex_act() {
 }
 
 function addPage_act() {
+        if( ifUserId_cmp() === false)
+        redirect_ctr ('pages/show/1') ;
     if ($_POST) {
         $result = addPage($_POST);
         if ($result) {
@@ -33,6 +35,8 @@ function addPage_act() {
 }
 
 function deletePage_act( $mPos ) {
+        if( ifUserId_cmp() === false)
+        redirect_ctr ('pages/show/1') ;
     include_once 'controllers/_components/session.php';
     $result = deletePage($mPos);
     if ($result) {
@@ -45,6 +49,8 @@ function deletePage_act( $mPos ) {
 }
 
 function editPage_act($mPos) {
+        if( ifUserId_cmp() === false)
+        redirect_ctr ('pages/show/1') ;
     $db = getDb();
    
     if (!$_POST) {
