@@ -14,7 +14,7 @@ function login($username, $password) {
     $username = mysqli_real_escape_string($db, $username) ;
     $password = sha1(SECURITY_SALT . $password) ;
     
-    $query = "SELECT * FROM " .DB_PRE. "users 
+    $query = "SELECT id FROM " .DB_PRE. "users 
               WHERE username = '{$username}' 
               AND password = '{$password}'" ;
     $result = mysqli_query($db, $query);

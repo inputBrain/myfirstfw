@@ -8,6 +8,8 @@ include_once 'views/_helpers/html.php';
 
 
 function adminIndex_act() {
+    if( ifUserId_cmp() === false)
+        redirect_ctr ('pages/show/1') ;
     include_once 'views/_helpers/session.php';
     $menu = getMenu('admin');
     display_ctr(compact('menu') ) ;

@@ -27,11 +27,12 @@ function login_act() {
     if ($_POST) {
         $user = login($_POST['username'], $_POST['password']) ;
         if ($user) {
+            userLogin_cmp($user['id']);
              setFlash_cmp('successMessage', 'Вы залогинились успешно');
              redirect_ctr('admin');
         } else {
             setFlash_cmp('errorMessage', 'Авторизация не пройдена');
-            redirect_ctr('signup');
+            redirect_ctr('login');
         }
         
     } else {
